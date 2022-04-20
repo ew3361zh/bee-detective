@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "393213313692",
+    "project_id": "beedetective-af1e2",
+    "storage_bucket": "beedetective-af1e2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:393213313692:android:d8bbdebe8c516e4c946359",
+        "android_client_info": {
+          "package_name": "com.example.beedetective"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "393213313692-jljq0mhpbtb4emn6vna96lsu6ou0sbc5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYjj2xWSJ6dV6ITSNgfruFAphPkXjm2BI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "393213313692-jljq0mhpbtb4emn6vna96lsu6ou0sbc5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
