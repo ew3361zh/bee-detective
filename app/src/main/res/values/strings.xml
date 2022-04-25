@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">BeeDetective</string>
+    <string name="report">Sighting</string>
+    <string name="map_view">Map View</string>
+    <string name="live_feed">Live Feed</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
