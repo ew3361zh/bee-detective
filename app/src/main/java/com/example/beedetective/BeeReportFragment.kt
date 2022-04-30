@@ -19,6 +19,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.squareup.picasso.Callback
@@ -29,6 +30,7 @@ import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 
+private const val TAG = "Bee-Report-Fragment"
 
 class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
@@ -39,6 +41,7 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
     private lateinit var dateEditButton: ImageButton
     private lateinit var locationEditButton: ImageButton
     private lateinit var beeImageView: ImageView
+    private lateinit var reportProgressBar: ProgressBar
 
     
     private var imageUri: Uri? = null
@@ -93,6 +96,8 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         dateTextView = view.findViewById(R.id.date_textView)
         takePictureFab = view.findViewById(R.id.picture_fab)
         beeImageView = view.findViewById(R.id.bee_image_holder)
+        submitFab = view.findViewById(R.id.submit_fab)
+        reportProgressBar = view.findViewById(R.id.reportProgressBar)
 
         dateTextView.text = currentDateFormat.format(currentCalendar.time)
 
@@ -102,6 +107,10 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
 
         takePictureFab.setOnClickListener {
             takePicture()
+        }
+
+        submitFab.setOnClickListener {
+            uploadImage()
         }
 
         return view
@@ -174,6 +183,29 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
             cameraActivityLauncher.launch(takePictureIntent)
         }
 
+    }
+
+    private fun uploadImage() {
+        if (imageUri != null && imageFileName != null) {
+
+            reportProgressBar.visibility = View.VISIBLE
+
+            val imageStorageRootReference = storage.reference
+            val imageCollectionReference = imageStorageRootReference.child("images")
+            val imageFileReference = imageCollectionReference.child(imageFileName!!)
+
+            imageFileReference.putFile(imageUri!!).addOnCompleteListener {
+                Snackbar.make(requireView(), "Bee report uploaded.", Snackbar.LENGTH_SHORT).show()
+                reportProgressBar.visibility = View.GONE
+            }
+                .addOnFailureListener { error ->
+                    Snackbar.make(requireView(), "Error uploading image", Snackbar.LENGTH_LONG).show()
+                    Log.e(TAG, "error uploading bee report $imageFileName", error)
+                    reportProgressBar.visibility = View.GONE
+                }
+        } else {
+            Snackbar.make(requireView(), "Take a picture first!", Snackbar.LENGTH_LONG).show()
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
