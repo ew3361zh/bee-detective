@@ -3,6 +3,10 @@
     <string name="report">Sighting</string>
     <string name="map_view">Map View</string>
     <string name="live_feed">Live Feed</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="current_date">Current Date</string>
+    <string name="sighting_notes_prompt">Write notes about sighting</string>
+    <string name="give_permission">You\'ll need to grant location permission to add a report</string>
+    <string name="grant_location_permission">Please grant location permission to add a report</string>
+    <string name="added_bee_report">New Bee Report Added!</string>
+    <string name="no_location">No location available, turn on your GPS</string>
 </resources>
