@@ -42,10 +42,10 @@ class FirebaseBeeReportRepository(private val db: FirebaseFirestore): BeeReportR
                 }
                 if (snapshot != null) {
                     // FROM CLARA
-                    // Simplest way - convert the snapshot to tree objects.
-                    // val trees = snapshot.toObjects(Tree::class.java)
+                    // Simplest way - convert the snapshot to bee report objects.
+                    // val reports = snapshot.toObjects(Report::class.java)
 
-                    // However, we want to store the tree references so we'll need to loop and
+                    // However, we want to store the report references so we'll need to loop and
                     // convert, and add the document references
 
                     val reports = mutableListOf<BeeReport>()
