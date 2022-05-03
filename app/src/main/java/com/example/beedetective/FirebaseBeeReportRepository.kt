@@ -7,7 +7,7 @@ import com.google.firebase.firestore.Query
 
 private const val TAG = "FB_REPORT_REPOSITORY"
 
-class FirebaseBeeReportRepository(private val db: FirebaseFirestore): BeeReportRepository {
+class FirebaseBeeReportRepository(db: FirebaseFirestore): BeeReportRepository {
 
     // Firebase-specific code. No references to any other parts of the project.
     private val reportCollectionReference = db.collection("reports")

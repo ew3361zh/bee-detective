@@ -14,10 +14,8 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
-
 import java.io.IOException
 import java.lang.Exception
-
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -48,13 +46,17 @@ private const val TAG = "Bee-Report-Fragment"
 
 class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
+    private val beeReportViewModel: BeeReportViewModel by lazy {
+        val app = requireActivity().application as BeeReportApplication
+        BeeReportViewModel.ReportViewModelFactory(app.beeReportRepository)
+            .create(BeeReportViewModel::class.java)
+    }
+
     private lateinit var dateTextView: TextView
     private lateinit var usernotesTextView: EditText
     private lateinit var takePictureFab: FloatingActionButton
     private lateinit var submitFab: FloatingActionButton
     private lateinit var dateEditButton: ImageButton
-    // Do we need an edit notes button or can the user just put notes into the field/edit at will?
-//    private lateinit var notesEditButton: ImageButton
     private lateinit var beeImageView: ImageView
     private lateinit var reportProgressBar: ProgressBar
 
@@ -93,10 +95,6 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
 
     var currentCalendar = Calendar.getInstance()
     private val currentDateFormat = SimpleDateFormat("yy-MM-dd, hh:mm aa", Locale.getDefault())
-    private val beeReportViewModel: BeeReportViewModel by lazy {
-        ViewModelProvider(requireActivity()).get(BeeReportViewModel::class.java)
-    }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -122,9 +120,8 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         reportProgressBar = view.findViewById(R.id.reportProgressBar)
         usernotesTextView = view.findViewById(R.id.usernotes_textView)
 
-        val currentDate = Calendar.getInstance().time
+//        val currentDate = Calendar.getInstance().time
         val currentDateFormat = SimpleDateFormat("yy-MM-dd, hh:mm aa", Locale.getDefault())
-
 
         dateTextView.text = currentDateFormat.format(currentCalendar.time)
 
@@ -140,17 +137,7 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
             uploadImageAndReport()
         }
 
-
-
         requestLocationPermission()
-//        takePictureFab.apply {
-//            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-//
-//            setOnClickListener {
-//                cameraActivityLauncher.launch(takePictureIntent)
-//            }
-//
-//        }
 
         return view
     }
@@ -178,13 +165,8 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
             .centerCrop()
             .into(imageView, object:
                 Callback {
-                override fun onSuccess() {
-                    Log.d("REPORT", "loaded image $imagePath")
-                }
-
-                override fun onError(e: Exception?) {
-                    Log.e("REPORT", "Error loading image $imagePath", e)
-                }
+                override fun onSuccess() { Log.d("REPORT", "loaded image $imagePath") }
+                override fun onError(e: Exception?) { Log.e("REPORT", "Error loading image $imagePath", e) }
             })
 
     }
@@ -255,7 +237,7 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
                             location.latitude,
                             location.longitude
                         ),
-                        userNotes = usernotesTextView.toString()
+                        userNotes = usernotesTextView.text.toString()
 
                     )
                     beeReportViewModel.addReport(beeReport)
