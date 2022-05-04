@@ -1,10 +1,21 @@
 package com.example.beedetective
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity.RESULT_CANCELED
 import android.app.Activity.RESULT_OK
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.widget.*
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
+import com.squareup.picasso.Callback
+import com.squareup.picasso.Picasso
+import java.io.IOException
+import java.lang.Exception
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -17,7 +28,12 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.lifecycle.ViewModelProvider
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.ktx.Firebase
@@ -34,16 +50,27 @@ private const val TAG = "Bee-Report-Fragment"
 
 class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
+    private val beeReportViewModel: BeeReportViewModel by lazy {
+        val app = requireActivity().application as BeeReportApplication
+        BeeReportViewModel.ReportViewModelFactory(app.beeReportRepository)
+            .create(BeeReportViewModel::class.java)
+    }
+
+
     private lateinit var dateTextView: TextView
-    private lateinit var locationTextView: TextView
+    private lateinit var usernotesTextView: EditText
     private lateinit var takePictureFab: FloatingActionButton
     private lateinit var submitFab: FloatingActionButton
     private lateinit var dateEditButton: ImageButton
-    private lateinit var locationEditButton: ImageButton
+
     private lateinit var beeImageView: ImageView
     private lateinit var reportProgressBar: ProgressBar
 
-    // This group is used to implement the camera feature.
+    // need to ask app if its been granted permission to user location
+    private var locationPermissionGranted = false
+
+    // get user's location - requires adding dependency and Gradle sync after importing this
+    private var fusedLocationProvider: FusedLocationProviderClient? = null
     private var imageUri: Uri? = null
     private var imageFileName: String? = null
     private var newImagePath: String? = null
@@ -53,13 +80,11 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
             checkImage(result)
         }
 
-    // calls firebase to upload images.
     private val storage = Firebase.storage
-    // Keys used to maintain refrence to bee photots taken.
     private val NEW_BEE_IMAGE_PATH_KEY = "new bee image path key"
     private val VISABLE_BEE_IMAGE_PATH_KEY = "current visible bee image path key"
 
-    // Maintain int values for date and time pickers.
+    // TODO move to data class?
     var day = 0
     var month = 0
     var year = 0
@@ -74,8 +99,6 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
 
     var currentCalendar = Calendar.getInstance()
     private val currentDateFormat = SimpleDateFormat("yy-MM-dd, hh:mm aa", Locale.getDefault())
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,7 +115,7 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         val view = inflater.inflate(R.layout.fragment_bee_report, container, false)
 //        createImageFile()
 
-
+        //TODO add progress bar, upload to firebase.
         dateEditButton = view.findViewById(R.id.edit_date_button)
         dateTextView = view.findViewById(R.id.date_textView)
         takePictureFab = view.findViewById(R.id.picture_fab)
@@ -100,27 +123,26 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         submitFab = view.findViewById(R.id.submit_fab)
         reportProgressBar = view.findViewById(R.id.reportProgressBar)
 
+        usernotesTextView = view.findViewById(R.id.usernotes_textView)
         dateTextView.text = currentDateFormat.format(currentCalendar.time)
-
+        
         dateEditButton.setOnClickListener {
             pickDate()
         }
-
-        // take photo button.
+        
         takePictureFab.setOnClickListener {
             takePicture()
+
         }
 
-        // submit report button.
         submitFab.setOnClickListener {
-            uploadImage()
+            uploadImageAndReport()
         }
+
+        requestLocationPermission()
 
         return view
     }
-
-
-
 
     private fun createImageFile(): Pair<File?, String?>{
         try {
@@ -144,15 +166,24 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
             .fit()
             .centerCrop()
             .into(imageView, object:
-            Callback {
-            override fun onSuccess() {
-                Log.d("REPORT", "loaded image $imagePath")
-            }
+                Callback {
+                override fun onSuccess() { Log.d("REPORT", "loaded image $imagePath") }
+                override fun onError(e: Exception?) { Log.e("REPORT", "Error loading image $imagePath", e) }
+            })
 
-            override fun onError(e: Exception?) {
-                Log.e("REPORT", "Error loading image $imagePath", e)
-            }
-        })
+    }
+
+    private fun setSubmitReportButtonEnabled(isEnabled: Boolean) {
+        submitFab.isClickable = isEnabled
+        submitFab.isEnabled = isEnabled
+
+        if (isEnabled) {
+            submitFab.backgroundTintList = AppCompatResources.getColorStateList(requireActivity(),
+                android.R.color.holo_orange_light)
+        } else {
+            submitFab.backgroundTintList = AppCompatResources.getColorStateList(requireActivity(),
+                android.R.color.darker_gray)
+        }
 
     }
 
@@ -188,6 +219,45 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
 
     }
 
+
+    @SuppressLint("MissingPermission")
+    private fun uploadImageAndReport() {
+
+        // starting with needing user location
+        if (fusedLocationProvider == null) {
+            return
+        }
+        if(!locationPermissionGranted) {
+            showSnackbar(getString(R.string.grant_location_permission))
+            return
+        }
+
+        fusedLocationProvider?.lastLocation?.addOnCompleteListener(requireActivity()){ locationRequestTask ->
+            val location = locationRequestTask.result
+            if(location !=null) {
+                    val beeReport = BeeReport(
+                        dateReported = java.util.Date(),
+                        location = com.google.firebase.firestore.GeoPoint(
+                            location.latitude,
+                            location.longitude
+                        ),
+                        userNotes = usernotesTextView.text.toString()
+
+                    )
+                    beeReportViewModel.addReport(beeReport)
+
+                    showSnackbar(getString(R.string.added_bee_report))
+
+            } else {
+                showSnackbar(getString(R.string.no_location))
+            }
+        }
+
+        uploadImage()
+
+    }
+
+
     private fun uploadImage() {
         if (imageUri != null && imageFileName != null) {
 
@@ -202,19 +272,60 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
                 reportProgressBar.visibility = View.GONE
             }
                 .addOnFailureListener { error ->
-                    Snackbar.make(requireView(), "Error uploading image", Snackbar.LENGTH_LONG).show()
+
+                    Snackbar.make(requireView(), "Error uploading image", Snackbar.LENGTH_LONG)
+                        .show()
+
                     Log.e(TAG, "error uploading bee report $imageFileName", error)
                     reportProgressBar.visibility = View.GONE
                 }
         } else {
             Snackbar.make(requireView(), "Take a picture first!", Snackbar.LENGTH_LONG).show()
         }
-    }
 
+    }
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(NEW_BEE_IMAGE_PATH_KEY, newImagePath)
         outState.putString(VISABLE_BEE_IMAGE_PATH_KEY, visibleImagePath)
+    }
+
+    private fun requestLocationPermission() {
+        // has user already granted permission?
+        if (ContextCompat.checkSelfPermission(
+                requireActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            // if location permission already granted, turn on add tree button, and initialize locaiton provider
+            locationPermissionGranted = true
+            Log.d(TAG, "permission already granted")
+            setSubmitReportButtonEnabled(true)
+            fusedLocationProvider = LocationServices.getFusedLocationProviderClient(requireActivity())
+        } else {
+            // need to ask for permission
+            val requestLocationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+                // this creates the launcher to ask for permission to use location
+                if (granted) {
+                    Log.d(TAG, "User granted permission")
+                    locationPermissionGranted = true
+                    setSubmitReportButtonEnabled(true)
+                    fusedLocationProvider = LocationServices.getFusedLocationProviderClient(requireActivity())
+                } else {
+                    Log.d(TAG, "User did not grant permission")
+                    setSubmitReportButtonEnabled(false)
+                    locationPermissionGranted = false
+                    showSnackbar(getString(R.string.give_permission))
+                }
+                // TODO something wth user's location like adding it to a BeeReport object
+            }
+            // launching specific permission request
+            requestLocationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        }
+    }
+
+    private fun showSnackbar(message: String) {
+        Snackbar.make(requireView(), message, Snackbar.LENGTH_LONG).show()
     }
 
     private fun pickDate() {
@@ -251,7 +362,6 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
 
     companion object {
 
-        @JvmStatic
         fun newInstance() = BeeReportFragment()
 
     }
