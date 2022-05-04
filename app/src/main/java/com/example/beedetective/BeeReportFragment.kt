@@ -1,6 +1,5 @@
 package com.example.beedetective
 
-
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity.RESULT_CANCELED
@@ -8,7 +7,6 @@ import android.app.Activity.RESULT_OK
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.widget.*
-
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
@@ -27,8 +25,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.TextView
+import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.content.res.AppCompatResources
@@ -38,7 +35,14 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
+import com.squareup.picasso.Callback
+import com.squareup.picasso.Picasso
 import java.io.File
+import java.io.IOException
+import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -52,11 +56,13 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
             .create(BeeReportViewModel::class.java)
     }
 
+
     private lateinit var dateTextView: TextView
     private lateinit var usernotesTextView: EditText
     private lateinit var takePictureFab: FloatingActionButton
     private lateinit var submitFab: FloatingActionButton
     private lateinit var dateEditButton: ImageButton
+
     private lateinit var beeImageView: ImageView
     private lateinit var reportProgressBar: ProgressBar
 
@@ -65,7 +71,6 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
 
     // get user's location - requires adding dependency and Gradle sync after importing this
     private var fusedLocationProvider: FusedLocationProviderClient? = null
-
     private var imageUri: Uri? = null
     private var imageFileName: String? = null
     private var newImagePath: String? = null
@@ -76,7 +81,6 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         }
 
     private val storage = Firebase.storage
-
     private val NEW_BEE_IMAGE_PATH_KEY = "new bee image path key"
     private val VISABLE_BEE_IMAGE_PATH_KEY = "current visible bee image path key"
 
@@ -118,19 +122,17 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         beeImageView = view.findViewById(R.id.bee_image_holder)
         submitFab = view.findViewById(R.id.submit_fab)
         reportProgressBar = view.findViewById(R.id.reportProgressBar)
+
         usernotesTextView = view.findViewById(R.id.usernotes_textView)
-
-//        val currentDate = Calendar.getInstance().time
-        val currentDateFormat = SimpleDateFormat("yy-MM-dd, hh:mm aa", Locale.getDefault())
-
         dateTextView.text = currentDateFormat.format(currentCalendar.time)
-
+        
         dateEditButton.setOnClickListener {
             pickDate()
         }
-
+        
         takePictureFab.setOnClickListener {
             takePicture()
+
         }
 
         submitFab.setOnClickListener {
@@ -182,6 +184,7 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
             submitFab.backgroundTintList = AppCompatResources.getColorStateList(requireActivity(),
                 android.R.color.darker_gray)
         }
+
     }
 
 
@@ -215,6 +218,7 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         }
 
     }
+
 
     @SuppressLint("MissingPermission")
     private fun uploadImageAndReport() {
@@ -253,6 +257,7 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
 
     }
 
+
     private fun uploadImage() {
         if (imageUri != null && imageFileName != null) {
 
@@ -267,14 +272,17 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
                 reportProgressBar.visibility = View.GONE
             }
                 .addOnFailureListener { error ->
+
                     Snackbar.make(requireView(), "Error uploading image", Snackbar.LENGTH_LONG)
                         .show()
+
                     Log.e(TAG, "error uploading bee report $imageFileName", error)
                     reportProgressBar.visibility = View.GONE
                 }
         } else {
             Snackbar.make(requireView(), "Take a picture first!", Snackbar.LENGTH_LONG).show()
         }
+
     }
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -320,7 +328,6 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         Snackbar.make(requireView(), message, Snackbar.LENGTH_LONG).show()
     }
 
-
     private fun pickDate() {
         currentCalender()
 
@@ -358,4 +365,6 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         fun newInstance() = BeeReportFragment()
 
     }
+
+
 }

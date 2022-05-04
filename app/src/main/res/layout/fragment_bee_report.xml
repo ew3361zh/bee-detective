@@ -14,6 +14,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/usernotes_textView">
 
+
         <ImageView
             android:id="@+id/bee_image_holder"
             android:layout_width="wrap_content"
