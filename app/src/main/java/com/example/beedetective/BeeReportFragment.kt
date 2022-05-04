@@ -7,13 +7,7 @@ import android.app.Activity.RESULT_OK
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.widget.*
-import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
-import com.squareup.picasso.Callback
-import com.squareup.picasso.Picasso
-import java.io.IOException
-import java.lang.Exception
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -25,19 +19,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import java.io.File
@@ -58,7 +49,7 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
 
 
     private lateinit var dateTextView: TextView
-    private lateinit var usernotesTextView: EditText
+    private lateinit var userNotesTextView: EditText
     private lateinit var takePictureFab: FloatingActionButton
     private lateinit var submitFab: FloatingActionButton
     private lateinit var dateEditButton: ImageButton
@@ -123,7 +114,7 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         submitFab = view.findViewById(R.id.submit_fab)
         reportProgressBar = view.findViewById(R.id.reportProgressBar)
 
-        usernotesTextView = view.findViewById(R.id.usernotes_textView)
+        userNotesTextView = view.findViewById(R.id.usernotes_textView)
         dateTextView.text = currentDateFormat.format(currentCalendar.time)
         
         dateEditButton.setOnClickListener {
@@ -236,12 +227,12 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
             val location = locationRequestTask.result
             if(location !=null) {
                     val beeReport = BeeReport(
-                        dateReported = java.util.Date(),
+                        dateReported = currentCalendar.time,
                         location = com.google.firebase.firestore.GeoPoint(
                             location.latitude,
                             location.longitude
                         ),
-                        userNotes = usernotesTextView.text.toString()
+                        userNotes = userNotesTextView.text.toString()
 
                     )
                     beeReportViewModel.addReport(beeReport)
