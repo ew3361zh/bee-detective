@@ -43,7 +43,7 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
     private lateinit var beeImageView: ImageView
     private lateinit var reportProgressBar: ProgressBar
 
-    
+    // This group is used to implement the camera feature.
     private var imageUri: Uri? = null
     private var imageFileName: String? = null
     private var newImagePath: String? = null
@@ -53,12 +53,13 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
             checkImage(result)
         }
 
+    // calls firebase to upload images.
     private val storage = Firebase.storage
-
+    // Keys used to maintain refrence to bee photots taken.
     private val NEW_BEE_IMAGE_PATH_KEY = "new bee image path key"
     private val VISABLE_BEE_IMAGE_PATH_KEY = "current visible bee image path key"
 
-    // TODO move to data class?
+    // Maintain int values for date and time pickers.
     var day = 0
     var month = 0
     var year = 0
@@ -91,7 +92,7 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         val view = inflater.inflate(R.layout.fragment_bee_report, container, false)
 //        createImageFile()
 
-        //TODO add progress bar, upload to firebase.
+
         dateEditButton = view.findViewById(R.id.edit_date_button)
         dateTextView = view.findViewById(R.id.date_textView)
         takePictureFab = view.findViewById(R.id.picture_fab)
@@ -105,10 +106,12 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
             pickDate()
         }
 
+        // take photo button.
         takePictureFab.setOnClickListener {
             takePicture()
         }
 
+        // submit report button.
         submitFab.setOnClickListener {
             uploadImage()
         }
