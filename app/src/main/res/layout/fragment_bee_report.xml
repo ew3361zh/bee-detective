@@ -6,19 +6,23 @@
     android:layout_height="match_parent"
     tools:context=".BeeReportFragment">
 
-    <ImageView
-        android:id="@+id/bee_image_holder"
+    <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:cropToPadding="false"
-        android:scaleType="fitCenter"
-        android:src="@drawable/bee_image_holder_unsplashable_taniap"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/location_textView">
+
+        <ImageView
+            android:id="@+id/bee_image_holder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:cropToPadding="false"
+            android:scaleType="centerInside"
+            android:src="@drawable/bee_image_holder_unsplashable_taniap" />
+    </FrameLayout>
 
     <ImageView
         android:id="@+id/imageView"
@@ -96,5 +100,17 @@
         android:src="@android:drawable/ic_menu_add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/reportProgressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

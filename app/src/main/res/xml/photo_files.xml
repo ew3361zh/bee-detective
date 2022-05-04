@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<paths>
-    <files-path
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <external-files-path
         name="bee_photos"
-        path="."/>
+        path="Pictures"/>
 </paths>
