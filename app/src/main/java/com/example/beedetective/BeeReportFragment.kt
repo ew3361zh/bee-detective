@@ -251,10 +251,16 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
                             location.latitude,
                             location.longitude
                         ),
-                        userNotes = userNotesTextView.text.toString()
+                        userNotes = userNotesTextView.text.toString(),
+                        photoName = imageFileName
                     )
                     beeReportViewModel.addReport(beeReport)
                     uploadImage()
+                    if (!imageFileName.isNullOrEmpty()) {
+                        Log.d(TAG, "${storage.getReference(imageFileName!!)} exists")
+                    } else {
+                        Log.e(TAG, "imageFileName is null")
+                    }
                     showSnackbar(getString(R.string.added_bee_report))
 
             } else {

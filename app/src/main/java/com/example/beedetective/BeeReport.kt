@@ -11,6 +11,7 @@ data class BeeReport (
                       val dateReported: Date? = null, // maybe not allow null?
                       val location: GeoPoint? = null, // also not allow null?
                       val userNotes: String? = null, // anything user wants to say about report
+                      val photoName: String? = null,
                       // something for photo - imageFileName, photoUri
 
                       // regular field in a beeReport object - code will be able to get/set it
