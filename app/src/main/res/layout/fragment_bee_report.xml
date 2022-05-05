@@ -14,7 +14,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/usernotes_textView">
 
-
         <ImageView
             android:id="@+id/bee_image_holder"
             android:layout_width="wrap_content"
@@ -57,11 +56,12 @@
         android:layout_marginStart="15dp"
         android:background="#A8A8A7"
         android:elevation="30dp"
-        android:hint="Write notes about sighting"
+        android:hint="@string/write_notes_about_sighting"
         android:textSize="24sp"
         app:layout_constraintEnd_toStartOf="@+id/edit_date_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_date_button" />
+
     <ImageButton
         android:id="@+id/edit_date_button"
         android:layout_width="wrap_content"
@@ -70,6 +70,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/date_textView"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/picture_fab"
         android:layout_width="wrap_content"
@@ -77,7 +78,9 @@
         android:clickable="true"
         android:src="@android:drawable/ic_menu_camera"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:focusable="true" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/submit_fab"
         android:layout_width="wrap_content"
@@ -85,7 +88,8 @@
         android:clickable="true"
         android:src="@android:drawable/ic_menu_add"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:focusable="true" />
 
     <ProgressBar
         android:id="@+id/reportProgressBar"
