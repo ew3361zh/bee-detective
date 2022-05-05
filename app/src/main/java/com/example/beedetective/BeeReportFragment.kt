@@ -25,7 +25,10 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.tasks.CancellationToken
+import com.google.android.gms.tasks.OnTokenCanceledListener
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.ktx.Firebase
@@ -38,6 +41,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 private const val TAG = "Bee-Report-Fragment"
+private const val LTAG = "Bee-Location-Service"
 
 class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
@@ -216,15 +220,30 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
 
         // starting with needing user location
         if (fusedLocationProvider == null) {
+            Log.d(LTAG, "Fused location provider is null")
             return
         }
         if(!locationPermissionGranted) {
             showSnackbar(getString(R.string.grant_location_permission))
+            Log.d(LTAG, "Location permission not granted")
             return
         }
 
-        fusedLocationProvider?.lastLocation?.addOnCompleteListener(requireActivity()){ locationRequestTask ->
+        class CT: CancellationToken() {
+            override fun onCanceledRequested(p0: OnTokenCanceledListener): CancellationToken {
+                Log.d(TAG, "cancellation requested")
+                return this  // todo figure out what to do here
+            }
+
+            override fun isCancellationRequested(): Boolean {
+                Log.d(TAG, "cancellation requested")
+                return false;  // same
+            }
+        }
+
+        fusedLocationProvider?.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, CT())?.addOnCompleteListener(requireActivity()){ locationRequestTask ->
             val location = locationRequestTask.result
+            Log.d(LTAG, "Location variable is $location")
             if(location !=null) {
                     val beeReport = BeeReport(
                         dateReported = currentCalendar.time,
@@ -233,10 +252,9 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
                             location.longitude
                         ),
                         userNotes = userNotesTextView.text.toString()
-
                     )
                     beeReportViewModel.addReport(beeReport)
-
+                    uploadImage()
                     showSnackbar(getString(R.string.added_bee_report))
 
             } else {
@@ -244,7 +262,7 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
             }
         }
 
-        uploadImage()
+
 
     }
 
@@ -308,7 +326,7 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
                     locationPermissionGranted = false
                     showSnackbar(getString(R.string.give_permission))
                 }
-                // TODO something wth user's location like adding it to a BeeReport object
+
             }
             // launching specific permission request
             requestLocationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
