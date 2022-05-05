@@ -22,22 +22,22 @@ class ReportListFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val recyclerView = inflater.inflate(R.layout.fragment_report_list, container, false)
+        val recyclerView = inflater.inflate(R.layout.fragment_report_feed, container, false)
 
         if (recyclerView !is RecyclerView) {
-            throw RuntimeException("TreeListFragment view should be Recycler View")
+            throw RuntimeException("ReportListFragment view should be Recycler View")
         }
 
-        val trees = listOf<BeeReport>() // have some data before list arrives from firebase
-        val adapter = ReportRecylerAdapter(trees) { tree, isFavorite ->
-            treeViewModel.setIsFavorite(tree, isFavorite)
-        } // okay to pass it an empty list
+        val reports = listOf<BeeReport>() // have some data before list arrives from firebase
+//        val adapter = ReportRecylerAdapter(trees) { report ->
+//            beeReportViewModel.setIsFavorite(report)
+//        } // okay to pass it an empty list
         recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = adapter
+//        recyclerView.adapter = adapter
 
         // requireactivity associates container activity for both fragments
-        treeViewModel.latestTrees.observe(requireActivity()) { treeList ->
-            adapter.trees = treeList
+        beeReportViewModel.latestReports.observe(requireActivity()) { reportList ->
+            adapter.reports = reportList
             adapter.notifyDataSetChanged()
         }
 

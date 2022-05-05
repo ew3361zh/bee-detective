@@ -38,7 +38,7 @@ class FirebaseBeeReportRepository(db: FirebaseFirestore): BeeReportRepository {
             .limit(10)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
-                    Log.e(TAG, "Error getting latest trees", error)
+                    Log.e(TAG, "Error getting latest reports", error)
                 }
                 if (snapshot != null) {
                     // FROM CLARA
