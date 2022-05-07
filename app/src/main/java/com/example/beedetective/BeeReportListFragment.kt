@@ -25,7 +25,8 @@ class ReportListFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val recyclerView = inflater.inflate(R.layout.fragment_bee_report_feed, container, false)
+        val recyclerView = inflater.inflate(R.layout.fragment_bee_report_feed, container,
+            false)
 
         if (recyclerView !is RecyclerView) {
             throw RuntimeException("ReportListFragment view should be Recycler View")
@@ -39,6 +40,9 @@ class ReportListFragment: Fragment() {
         // requireactivity associates container activity for both fragments
         beeReportViewModel.latestReports.observe(requireActivity()) { reportList ->
             adapter.reports = reportList
+            for (report in reportList) {
+                Log.d(TAG, "List Frag getting a report usernote ${report.userNotes}")
+            }
             adapter.notifyDataSetChanged()
         }
 
