@@ -19,8 +19,9 @@ class FirebaseBeeReportRepository(db: FirebaseFirestore): BeeReportRepository {
         reportCollectionReference.add(beeReport)
             .addOnSuccessListener { reportDocumentReference ->
                 Log.d(TAG, "Added report document $reportDocumentReference")
-                // Clara has a tree.documentReference = treeDocumentReference line here she doesn't use
-                // also is part of the tree data class
+                // TODO delete this note when no longer needed
+                //  Clara has a tree.documentReference = treeDocumentReference line here she doesn't use
+                //  also is part of the tree data class
             }
             .addOnFailureListener { error ->
                 Log.e(TAG, "Error adding report $beeReport", error)
@@ -38,7 +39,7 @@ class FirebaseBeeReportRepository(db: FirebaseFirestore): BeeReportRepository {
             .limit(10)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
-                    Log.e(TAG, "Error getting latest trees", error)
+                    Log.e(TAG, "Error getting latest reports", error)
                 }
                 if (snapshot != null) {
                     // FROM CLARA

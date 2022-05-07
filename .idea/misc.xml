@@ -8,6 +8,12 @@
         <entry key="..\:/Users/Nate O/AndroidStudioProjects/BeeDetective/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Nate O/AndroidStudioProjects/BeeDetective/app/src/main/res/xml/photo_files.xml" value="0.18802083333333333" />
         <entry key="app/src/main/res/layout/fragment_bee_report.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_bee_report_feed.xml" value="0.284375" />
+        <entry key="app/src/main/res/layout/fragment_bee_report_feed_item.xml" value="0.284375" />
+        <entry key="app/src/main/res/layout/fragment_report_feed.xml" value="0.284375" />
+        <entry key="app/src/main/res/layout/fragment_report_feed_item.xml" value="0.284375" />
+        <entry key="app/src/main/res/layout/fragment_sighting_feed.xml" value="0.284375" />
+        <entry key="app/src/main/res/layout/fragment_sighting_feed_item.xml" value="0.284375" />
       </map>
     </option>
   </component>
