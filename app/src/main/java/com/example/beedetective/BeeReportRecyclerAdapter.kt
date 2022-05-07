@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
 
 class ReportRecyclerAdapter(var reports: List<BeeReport>):
     RecyclerView.Adapter<ReportRecyclerAdapter.ViewHolder>() {
@@ -14,7 +15,12 @@ class ReportRecyclerAdapter(var reports: List<BeeReport>):
         fun bind(report: BeeReport) {
             view.findViewById<TextView>(R.id.date_spotted).text = "${report.dateReported}"
             view.findViewById<TextView>(R.id.usernotes).text = report.userNotes
-            view.findViewById<ImageView>(R.id.bee_photo)
+
+            // url link to photo in firebase storage
+            var photoPathReference = "gs://beedetective-af1e2.appspot.com/images/" + report.photoName
+
+            Picasso.get().load(photoPathReference).into(view.findViewById<ImageView>(R.id.bee_photo))
+//            view.findViewById<ImageView>(R.id.bee_photo)
             // this is where we would find a piece of the tree fragment list item and set up a listener for it
 
         }

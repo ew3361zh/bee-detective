@@ -53,6 +53,7 @@ class FirebaseBeeReportRepository(db: FirebaseFirestore): BeeReportRepository {
                     for (reportDocument in snapshot) {
                         val report = reportDocument.toObject(BeeReport::class.java)
                         report.documentReference = reportDocument.reference
+                        // report should have photoName to eventually pull photo from Firebase Storage
                         reports.add(report)
                     }
                     Log.d(TAG, "Reports from firebase: $reports")
