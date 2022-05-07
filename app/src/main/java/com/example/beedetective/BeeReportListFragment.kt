@@ -1,5 +1,6 @@
 package com.example.beedetective
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,9 +15,20 @@ private const val TAG = "ReportListFRAG"
 
 class ReportListFragment: Fragment() {
 
-    private val beeReportViewModel: BeeReportViewModel by lazy {
-        val app = requireActivity().application as BeeReportApplication
-        BeeReportViewModel.ReportViewModelFactory(app.beeReportRepository)
+//    private val beeReportViewModel: BeeReportViewModel by lazy {
+//        val app = requireActivity().application as BeeReportApplication
+//        BeeReportViewModel.ReportViewModelFactory(app.beeReportRepository)
+//            .create(BeeReportViewModel::class.java)
+//    }
+
+    private lateinit var beeReportViewModel: BeeReportViewModel
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        val application = requireActivity().application as BeeReportApplication
+
+        beeReportViewModel = BeeReportViewModel.ReportViewModelFactory(application.beeReportRepository)
             .create(BeeReportViewModel::class.java)
     }
 
@@ -34,8 +46,7 @@ class ReportListFragment: Fragment() {
 
         val reports = listOf<BeeReport>() // have some data before list arrives from firebase
         val adapter = ReportRecyclerAdapter(reports)  // okay to pass it an empty list
-        recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = adapter
+
         Log.d(TAG, "Adapter has been made $adapter")
         // requireactivity associates container activity for both fragments
         beeReportViewModel.latestReports.observe(requireActivity()) { reportList ->
@@ -45,6 +56,9 @@ class ReportListFragment: Fragment() {
             }
             adapter.notifyDataSetChanged()
         }
+
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.adapter = adapter
 
         return recyclerView
     }
