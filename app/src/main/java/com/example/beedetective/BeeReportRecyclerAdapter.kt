@@ -21,9 +21,9 @@ class ReportRecyclerAdapter(var reports: List<BeeReport>):
             view.findViewById<TextView>(R.id.usernotes).text = report.userNotes
             Log.d(TAG, "usernotes are ${report.userNotes}")
             // url link to photo in firebase storage
-//            val photoPathReference = "gs://beedetective-af1e2.appspot.com/images/" + report.photoName
-//
-//            Picasso.get().load(photoPathReference).into(view.findViewById<ImageView>(R.id.bee_photo))
+            val photoPathReference = "gs://beedetective-af1e2.appspot.com/images/" + report.photoName
+
+            Picasso.get().load(photoPathReference).into(view.findViewById<ImageView>(R.id.bee_photo))
 //            view.findViewById<ImageView>(R.id.bee_photo)
             // this is where we would find a piece of the tree fragment list item and set up a listener for it
 
