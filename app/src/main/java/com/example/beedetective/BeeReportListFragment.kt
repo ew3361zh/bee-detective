@@ -1,6 +1,7 @@
 package com.example.beedetective
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.lang.RuntimeException
+
+private const val TAG = "ReportListFRAG"
 
 class ReportListFragment: Fragment() {
 
@@ -32,7 +35,7 @@ class ReportListFragment: Fragment() {
         val adapter = ReportRecyclerAdapter(reports)  // okay to pass it an empty list
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
-
+        Log.d(TAG, "Adapter has been made $adapter")
         // requireactivity associates container activity for both fragments
         beeReportViewModel.latestReports.observe(requireActivity()) { reportList ->
             adapter.reports = reportList

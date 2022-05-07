@@ -1,4 +1,5 @@
 package com.example.beedetective
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,6 +8,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 
+private const val TAG = "RECYCLER_ADAPTER"
+
 class ReportRecyclerAdapter(var reports: List<BeeReport>):
     RecyclerView.Adapter<ReportRecyclerAdapter.ViewHolder>() {
 
@@ -14,12 +17,13 @@ class ReportRecyclerAdapter(var reports: List<BeeReport>):
     inner class ViewHolder(private val view: View): RecyclerView.ViewHolder(view) {
         fun bind(report: BeeReport) {
             view.findViewById<TextView>(R.id.date_spotted).text = "${report.dateReported}"
+            Log.d(TAG, "date report is ${report.dateReported}")
             view.findViewById<TextView>(R.id.usernotes).text = report.userNotes
-
+            Log.d(TAG, "usernotes are ${report.userNotes}")
             // url link to photo in firebase storage
-            var photoPathReference = "gs://beedetective-af1e2.appspot.com/images/" + report.photoName
-
-            Picasso.get().load(photoPathReference).into(view.findViewById<ImageView>(R.id.bee_photo))
+//            val photoPathReference = "gs://beedetective-af1e2.appspot.com/images/" + report.photoName
+//
+//            Picasso.get().load(photoPathReference).into(view.findViewById<ImageView>(R.id.bee_photo))
 //            view.findViewById<ImageView>(R.id.bee_photo)
             // this is where we would find a piece of the tree fragment list item and set up a listener for it
 

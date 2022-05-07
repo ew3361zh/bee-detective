@@ -23,6 +23,9 @@ class BeeReportViewModel(private val beeReportRepository: BeeReportRepository): 
     init {
         beeReportRepository.observeReports { reports ->
             latestReports.postValue(reports)
+            for (report in reports) {
+                Log.d(TAG, "Report note is ${report.userNotes}")
+            }
         }
     }
 

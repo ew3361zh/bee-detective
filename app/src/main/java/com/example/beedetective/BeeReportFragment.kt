@@ -256,6 +256,8 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
                     )
                     beeReportViewModel.addReport(beeReport)
                     uploadImage()
+                // clear user notes from just-uploaded report
+                    userNotesTextView.setText("")
                     if (!imageFileName.isNullOrEmpty()) {
                         Log.d(TAG, "${storage.getReference(imageFileName!!)} exists")
                     } else {
