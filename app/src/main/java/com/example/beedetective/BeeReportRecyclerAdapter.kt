@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import com.squareup.picasso.Picasso
 
 private const val TAG = "RECYCLER_ADAPTER"
@@ -21,10 +23,18 @@ class ReportRecyclerAdapter(var reports: List<BeeReport>):
             view.findViewById<TextView>(R.id.usernotes).text = report.userNotes
 //            Log.d(TAG, "usernotes are ${report.userNotes}")
             // url link to photo in firebase storage
+//            val storage = Firebase.storage
+//            val storageRef = storage.reference
+//            val pathRef = storageRef.child("images/"+report.photoName.toString())
+//            val gsRef = storage.getReferenceFromUrl("gs://beedetective-af1e2.appspot.com/images/" + report.photoName.toString())
+//            val httpsRef = storage.getReferenceFromUrl("https://firebasestorage.googleapis.com/b/bucket/o/images%20" + report.photoName.toString())
+
             val photoPathReference = "gs://beedetective-af1e2.appspot.com/images/" + report.photoName.toString()
-            Log.d(TAG, "photo path is $photoPathReference")
+            val photoHttpPathReference = "https://firebasestorage.googleapis.com/v0/b/beedetective-af1e2.appspot.com/o/images%2F" +
+                    report.photoName.toString() + "?alt=media&token=c0d00bf1-f1f2-467a-82cf-2ce522068cdb"
+            Log.d(TAG, "photo path is $photoHttpPathReference")
             Picasso.get()
-                .load(photoPathReference)
+                .load(photoHttpPathReference)
                 .error(android.R.drawable.stat_notify_error) // displayed if issue with loading image
                 .fit()
                 .centerCrop()
