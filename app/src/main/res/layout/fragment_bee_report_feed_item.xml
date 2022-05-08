@@ -28,7 +28,6 @@
         android:id="@+id/bee_photo"
         android:layout_width="0dp"
         android:layout_height="300dp"
-        android:background="#F000BCD4"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
