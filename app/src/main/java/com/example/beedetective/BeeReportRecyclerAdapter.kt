@@ -19,27 +19,21 @@ class ReportRecyclerAdapter(var reports: List<BeeReport>):
     inner class ViewHolder(private val view: View): RecyclerView.ViewHolder(view) {
         fun bind(report: BeeReport) {
             view.findViewById<TextView>(R.id.date_spotted).text = "${report.dateReported}"
-//            Log.d(TAG, "date report is ${report.dateReported}")
+            // todo user notes can be blank, should we add default value for note?
             view.findViewById<TextView>(R.id.usernotes).text = report.userNotes
-//            Log.d(TAG, "usernotes are ${report.userNotes}")
             // url link to photo in firebase storage
-//            val storage = Firebase.storage
-//            val storageRef = storage.reference
-//            val pathRef = storageRef.child("images/"+report.photoName.toString())
-//            val gsRef = storage.getReferenceFromUrl("gs://beedetective-af1e2.appspot.com/images/" + report.photoName.toString())
-//            val httpsRef = storage.getReferenceFromUrl("https://firebasestorage.googleapis.com/b/bucket/o/images%20" + report.photoName.toString())
-
-            val photoPathReference = "gs://beedetective-af1e2.appspot.com/images/" + report.photoName.toString()
             val photoHttpPathReference = "https://firebasestorage.googleapis.com/v0/b/beedetective-af1e2.appspot.com/o/images%2F" +
                     report.photoName.toString() + "?alt=media&token=c0d00bf1-f1f2-467a-82cf-2ce522068cdb"
             Log.d(TAG, "photo path is $photoHttpPathReference")
+            // todo what if user doesn't take photo or photo can't load - maybe have default bee photo inserted
+            // todo ideally would only get reports with photos but maybe important to have location data
+            //  which we could use to launch a map intent?
             Picasso.get()
                 .load(photoHttpPathReference)
                 .error(android.R.drawable.stat_notify_error) // displayed if issue with loading image
                 .fit()
                 .centerCrop()
                 .into(view.findViewById<ImageView>(R.id.bee_photo))
-
         }
     }
 

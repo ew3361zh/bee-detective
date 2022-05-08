@@ -15,12 +15,6 @@ private const val TAG = "ReportListFRAG"
 
 class ReportListFragment: Fragment() {
 
-//    private val beeReportViewModel: BeeReportViewModel by lazy {
-//        val app = requireActivity().application as BeeReportApplication
-//        BeeReportViewModel.ReportViewModelFactory(app.beeReportRepository)
-//            .create(BeeReportViewModel::class.java)
-//    }
-
     private lateinit var beeReportViewModel: BeeReportViewModel
 
     override fun onAttach(context: Context) {
@@ -48,7 +42,7 @@ class ReportListFragment: Fragment() {
         val adapter = ReportRecyclerAdapter(reports)  // okay to pass it an empty list
 
         Log.d(TAG, "Adapter has been made $adapter")
-        // requireactivity associates container activity for both fragments
+        // requireactivity() associates container activity for both fragments
         beeReportViewModel.latestReports.observe(requireActivity()) { reportList ->
             adapter.reports = reportList
             for (report in reportList) {

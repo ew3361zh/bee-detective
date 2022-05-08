@@ -36,7 +36,7 @@ class BeeReportViewModel(private val beeReportRepository: BeeReportRepository): 
     fun deleteReport(beeReport: BeeReport) {
         beeReportRepository.deleteReport(beeReport)
     // TODO we want to allow user to delete report from feed but not from db
-    // would be ideal if we could tag a deleted report from user in the db though
+    //  would be ideal if we could tag a deleted report from user in the db though
     }
 
     override fun onCleared() {

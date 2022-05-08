@@ -8,5 +8,4 @@ interface BeeReportRepository {
     fun deleteReport(beeReport: BeeReport)
     fun observeReports(notifyObserver: (List<BeeReport>) -> Unit)
     fun stopObservingReports()
-    // any other functions we need to do with a beeReport?
 }

@@ -38,8 +38,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-//        supportFragmentManager.beginTransaction().replace(R.id.fragmentContainerView,
-//            BeeReportFragment.newInstance()).commit()
     }
 
     private fun showFragment(tag: String) {

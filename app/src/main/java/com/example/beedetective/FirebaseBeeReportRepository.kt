@@ -16,8 +16,6 @@ class FirebaseBeeReportRepository(db: FirebaseFirestore): BeeReportRepository {
     // keep a reference to the listener so can stop listening when not needed.
     private var reportCollectionListener: ListenerRegistration? = null
 
-//    val latestReports = MutableLiveData<List<BeeReport>>()
-
     override fun addReport(beeReport: BeeReport) {
         reportCollectionReference.add(beeReport)
             .addOnSuccessListener { reportDocumentReference ->
@@ -44,10 +42,7 @@ class FirebaseBeeReportRepository(db: FirebaseFirestore): BeeReportRepository {
                     Log.e(TAG, "Error getting latest reports", error)
                 }
                 if (snapshot != null) {
-                    // FROM CLARA
                     // Simplest way - convert the snapshot to bee report objects.
-//                     val reports = snapshot.toObjects(BeeReport::class.java)
-
                     // However, we want to store the report references so we'll need to loop and
                     // convert, and add the document references
                     Log.d(TAG, "Snapshot is ${snapshot.size()}")
@@ -60,8 +55,7 @@ class FirebaseBeeReportRepository(db: FirebaseFirestore): BeeReportRepository {
                         Log.d(TAG, "Report from firebase: $report")
                     }
                     Log.d(TAG, "Reports from firebase: $reports")
-                    notifyObserver(reports)
-
+                    notifyObserver(reports) // notifyReports is callback function name of this override function observeReports
                 }
             }
     }
