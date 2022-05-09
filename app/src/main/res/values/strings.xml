@@ -10,4 +10,6 @@
     <string name="added_bee_report">New Bee Report Added!</string>
     <string name="no_location">No location available, turn on your GPS</string>
     <string name="write_notes_about_sighting">Write notes about sighting</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
