@@ -9,4 +9,6 @@
     <string name="grant_location_permission">Please grant location permission to add a report</string>
     <string name="added_bee_report">New Bee Report Added!</string>
     <string name="no_location">No location available, turn on your GPS</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
