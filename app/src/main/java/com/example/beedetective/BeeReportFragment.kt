@@ -51,7 +51,6 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
             .create(BeeReportViewModel::class.java)
     }
 
-
     private lateinit var dateTextView: TextView
     private lateinit var userNotesTextView: EditText
     private lateinit var takePictureFab: FloatingActionButton
@@ -106,10 +105,7 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_bee_report, container, false)
-//        createImageFile()
-
         //TODO add progress bar, upload to firebase.
         dateEditButton = view.findViewById(R.id.edit_date_button)
         dateTextView = view.findViewById(R.id.date_textView)
@@ -256,6 +252,8 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
                     )
                     beeReportViewModel.addReport(beeReport)
                     uploadImage()
+                // clear user notes from just-uploaded report
+                    userNotesTextView.setText("")
                     if (!imageFileName.isNullOrEmpty()) {
                         Log.d(TAG, "${storage.getReference(imageFileName!!)} exists")
                     } else {
@@ -267,9 +265,6 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
                 showSnackbar(getString(R.string.no_location))
             }
         }
-
-
-
     }
 
 
@@ -297,8 +292,8 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         } else {
             Snackbar.make(requireView(), "Take a picture first!", Snackbar.LENGTH_LONG).show()
         }
-
     }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(NEW_BEE_IMAGE_PATH_KEY, newImagePath)
@@ -345,12 +340,10 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
 
     private fun pickDate() {
         currentCalender()
-
         DatePickerDialog(requireActivity(), this, year, month, day).show()
     }
 
     private fun currentCalender() {
-
         year = currentCalendar.get(Calendar.YEAR)
         month = currentCalendar.get(Calendar.MONTH)
         day = currentCalendar.get(Calendar.DAY_OF_MONTH)
@@ -376,9 +369,7 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
     }
 
     companion object {
-
         fun newInstance() = BeeReportFragment()
-
     }
 
 

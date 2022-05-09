@@ -6,7 +6,6 @@ package com.example.beedetective
 interface BeeReportRepository {
     fun addReport(beeReport: BeeReport)
     fun deleteReport(beeReport: BeeReport)
-    fun observeReports(function: (List<BeeReport>) -> Unit)
+    fun observeReports(notifyObserver: (List<BeeReport>) -> Unit)
     fun stopObservingReports()
-    // any other functions we need to do with a beeReport?
 }

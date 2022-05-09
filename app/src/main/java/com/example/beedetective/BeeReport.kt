@@ -5,14 +5,12 @@ import com.google.firebase.firestore.Exclude
 import com.google.firebase.firestore.GeoPoint
 import java.util.*
 
-data class BeeReport (
-                   // TODO implement getting/using UUID
-                    // val user: UUID, // better choice for tying a user to a report?
-                      val dateReported: Date? = null, // maybe not allow null?
+data class BeeReport (val dateReported: Date? = null, // maybe not allow null?
+                                                      // todo check what happens in list fragment if eliminate report date in firebase
                       val location: GeoPoint? = null, // also not allow null?
-                      val userNotes: String? = null, // anything user wants to say about report
+                      val userNotes: String? = null, // anything user wants to say about report, definitely okay if null
                       val photoName: String? = null,
-                      // something for photo - imageFileName, photoUri
+                      // TODO implement getting/using UUID - app uniquely identifies user and ties to reports
 
                       // regular field in a beeReport object - code will be able to get/set it
                       // ignored by firebase for getting/setting

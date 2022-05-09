@@ -1,6 +1,7 @@
 package com.example.beedetective
 
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
@@ -19,8 +20,6 @@ class FirebaseBeeReportRepository(db: FirebaseFirestore): BeeReportRepository {
         reportCollectionReference.add(beeReport)
             .addOnSuccessListener { reportDocumentReference ->
                 Log.d(TAG, "Added report document $reportDocumentReference")
-                // Clara has a tree.documentReference = treeDocumentReference line here she doesn't use
-                // also is part of the tree data class
             }
             .addOnFailureListener { error ->
                 Log.e(TAG, "Error adding report $beeReport", error)
@@ -28,34 +27,35 @@ class FirebaseBeeReportRepository(db: FirebaseFirestore): BeeReportRepository {
 
     }
 
+    // TODO determine if we will allow deleted reports by users (maybe just from feed and not from db)
+    // --> could add boolean field to report object "deletedByUser" and not display those in the feed
     override fun deleteReport(beeReport: BeeReport) {
         beeReport.documentReference?.delete()
     }
 
-    override fun observeReports(function: (List<BeeReport>) -> Unit) {
+    override fun observeReports(notifyObserver: (List<BeeReport>) -> Unit) {
         reportCollectionListener = reportCollectionReference
-            .orderBy("dateSpotted", Query.Direction.ASCENDING)
+            .orderBy("dateReported", Query.Direction.DESCENDING)
             .limit(10)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
-                    Log.e(TAG, "Error getting latest trees", error)
+                    Log.e(TAG, "Error getting latest reports", error)
                 }
                 if (snapshot != null) {
-                    // FROM CLARA
                     // Simplest way - convert the snapshot to bee report objects.
-                    // val reports = snapshot.toObjects(Report::class.java)
-
                     // However, we want to store the report references so we'll need to loop and
                     // convert, and add the document references
-
+                    Log.d(TAG, "Snapshot is ${snapshot.size()}")
                     val reports = mutableListOf<BeeReport>()
                     for (reportDocument in snapshot) {
                         val report = reportDocument.toObject(BeeReport::class.java)
                         report.documentReference = reportDocument.reference
+                        // report should have photoName to eventually pull photo from Firebase Storage
                         reports.add(report)
+                        Log.d(TAG, "Report from firebase: $report")
                     }
                     Log.d(TAG, "Reports from firebase: $reports")
-//                    notifyObserver(reports) --> code from Clara not working here
+                    notifyObserver(reports) // notifyReports is callback function name of this override function observeReports
                 }
             }
     }
