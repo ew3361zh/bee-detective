@@ -6,24 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".BeeReportFragment">
 
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/usernotes_textView">
 
-
-        <ImageView
-            android:id="@+id/bee_image_holder"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:cropToPadding="false"
-            android:scaleType="centerInside"
-            android:src="@drawable/bee_image_holder_unsplashable_taniap" />
-    </FrameLayout>
+    <ImageView
+        android:id="@+id/bee_image_holder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:cropToPadding="false"
+        android:scaleType="centerCrop"
+        android:src="@drawable/blue_sky_harry_cooke"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="-157dp" />
 
     <ImageView
         android:id="@+id/imageView"
@@ -33,6 +26,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/date_textView"
         android:layout_width="0dp"
@@ -40,9 +34,10 @@
         android:layout_margin="15dp"
         android:layout_marginStart="15dp"
         android:layout_marginEnd="15dp"
-        android:background="#A8A8A7"
+        android:background="#00000000"
         android:elevation="30dp"
         android:text="@string/current_date"
+        android:textColor="#EEFF00"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="@+id/edit_date_button"
         app:layout_constraintEnd_toStartOf="@+id/edit_date_button"
@@ -55,9 +50,11 @@
         android:layout_height="wrap_content"
         android:layout_margin="15dp"
         android:layout_marginStart="15dp"
-        android:background="#A8A8A7"
+        android:background="#00000000"
         android:elevation="30dp"
         android:hint="@string/write_notes_about_sighting"
+        android:textColor="#EEFF00"
+        android:textColorHint="#EEFF00"
         android:textSize="24sp"
         app:layout_constraintEnd_toStartOf="@+id/edit_date_button"
         app:layout_constraintStart_toStartOf="parent"
@@ -67,6 +64,7 @@
         android:id="@+id/edit_date_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="#FFF069"
         android:src="@android:drawable/ic_menu_edit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/date_textView"
