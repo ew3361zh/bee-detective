@@ -15,7 +15,10 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -24,15 +27,50 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.tasks.CancellationToken
+import com.google.android.gms.tasks.OnTokenCanceledListener
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.GeoPoint
+import java.lang.RuntimeException
 import java.util.*
+/*private const val TAG = "MAP_FRAGMENT"
 
+class BeeMapFragment : Fragment() {
+    private val treeViewModel: BeeReportViewModel by lazy {
+        ViewModelProvider(requireActivity()).get(BeeReportViewModel::class.java)
+    }*/
+
+   /* override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+
+        val recyclerView = inflater.inflate(R.layout.fragment_bee_map, container, false)
+
+        if (recyclerView !is RecyclerView) {
+            throw RuntimeException("MapView view should be Recycler View")
+        }
+        val trees = listOf<BeeReport>()
+        val adapter = BeeRecyclerViewAdapter(beereport)
+        recyclerView.layoutManager = LinearLayoutManager(context)
+
+
+
+        treeViewModel.latestReports.observe(requireActivity()) { BeeReportList ->
+            adapter.bees = BeeReportList
+            adapter.notifyDataSetChanged()
+        }
+
+        return recyclerView
+    }
+}
+*/
+/*
 private const val TAG = "MAP_FRAGMENT"
 
 class BeeMapFragment : Fragment() {
-    private lateinit var addBeeButton: FloatingActionButton
+
     private var locationPermissionGranted = true
     private var movedMapToUsersLocation = false
     private var fusedLocationProvider: FusedLocationProviderClient? = null
@@ -41,39 +79,6 @@ class BeeMapFragment : Fragment() {
 
     private val BeeReportViewModel: BeeReportViewModel by lazy {
         ViewModelProvider(requireActivity()).get(BeeReportViewModel::class.java)
-    }
-
-    private val mapReadyCallback = OnMapReadyCallback { googleMap ->
-        Log.d(TAG, "Google map ready")
-        map = googleMap
-    }
-
-    private fun updateMap() {
-
-
-        if (locationPermissionGranted) {
-            if (!movedMapToUsersLocation) {
-                moveMapToUserLocation()
-            }
-        }
-
-    }
-
-    private fun setAddBeeButtonEnabled(isEnabled: Boolean) {
-        addBeeButton.isClickable = isEnabled
-        addBeeButton.isEnabled = isEnabled
-
-        if (isEnabled) {
-            addBeeButton.backgroundTintList = AppCompatResources.getColorStateList(
-                requireActivity(),
-                android.R.color.holo_orange_light
-            )
-        } else {
-            addBeeButton.backgroundTintList = AppCompatResources.getColorStateList(
-                requireActivity(),
-                android.R.color.darker_gray
-            )
-        }
     }
 
     private fun showSnackbar(message: String) {
@@ -88,8 +93,7 @@ class BeeMapFragment : Fragment() {
         ) {
             locationPermissionGranted = true
             Log.d(TAG, "permission already granted")
-            updateMap()
-            setAddTreeButtonEnabled(true)
+
             fusedLocationProvider =
                 LocationServices.getFusedLocationProviderClient(requireActivity())
         } else {
@@ -98,22 +102,20 @@ class BeeMapFragment : Fragment() {
 
                     if (granted) {
                         Log.d(TAG, "User granted permission")
-                        setAddTreeButtonEnabled(true)
                         locationPermissionGranted = true
                         fusedLocationProvider =
                             LocationServices.getFusedLocationProviderClient(requireActivity())
                     } else {
                         Log.d(TAG, "User did not grant permission")
-                        setAddTreeButtonEnabled(false)
                         locationPermissionGranted = false
                         showSnackbar(getString(R.string.give_permission))
                     }
 
-                    updateMap()
                 }
             requestLocationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
     }
+
 
     @SuppressLint("MissingPermission")
     private fun moveMapToUserLocation() {
@@ -138,87 +140,14 @@ class BeeMapFragment : Fragment() {
                 }
             }
 
+
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val mainView = inflater.inflate(R.layout.fragment_bee_map, container, false)
-
-        addBeeButton = mainView.findViewById(R.id.add_photo)
-        addBeeButton.setOnClickListener {
-
-            // addBeeLocation()
-
-        }
-        val mapFragment =
-            childFragmentManager.findFragmentById(R.id.map_view) as SupportMapFragment?
-        mapFragment?.getMapAsync(mapReadyCallback)
-
-        setAddTreeButtonEnabled(false)
-
-        requestLocationPermission()
-
-    return mainView
-}
     companion object {
         @JvmStatic
         fun newInstance() = BeeMapFragment()
     }
-    }
+}
 
-       /* @SuppressLint("MissingPermission")
-        fun addBeeLocation() {
-
-
-            if (map == null) {
-                return
-            }
-            if (fusedLocationProvider == null) {
-                return
-            }
-            if (!locationPermissionGranted) {
-                showSnackbar(getString(R.string.grant_location_permission))
-                return
-            }
-
-            if (ActivityCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED
-            )
-        }
-
-    }
-
-}*/
-
-   /*         fusedLocationProvider?.lastLocation?.addOnCompleteListener(requireActivity()) { locationRequestTask ->
-                val location = locationRequestTask.result
-                if (location != null) {
-                    getBee { BeeInfo ->
-                        val bee = BeeInfo(
-                            dateSpotted = Date(),
-                            location = GeoPoint(location.latitude, location.longitude)
-                        )
-                        BeeReportViewModel.addBee(bee)
-
-                        moveMapToUserLocation()
-                        showSnackbar(getString(R.string.added_bee_report))
-                    }
-                } else {
-                    showSnackbar(getString(R.string.no_location))
-                }
-            }
 */
-
-/*    companion object {
-            @JvmStatic
-            fun newInstance() = BeeMapFragment()
-        }
-   */

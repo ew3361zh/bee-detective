@@ -18,6 +18,7 @@ class BeeReportViewModel(private val beeReportRepository: BeeReportRepository): 
     // No Firebase-related code, or any code that specifically refers
     // to any data store.
 
+
     val latestReports = MutableLiveData<List<BeeReport>>()
 
     init {
