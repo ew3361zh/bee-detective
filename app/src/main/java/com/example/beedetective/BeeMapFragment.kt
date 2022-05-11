@@ -88,7 +88,7 @@ class BeeMapFragment : Fragment() {
             bee.location?.let { geoPoint ->
                 // val isUsers = could be used to mark user submitted reports.
 
-                val beeIcon = R.drawable.bee_map_marker
+                val beeIcon = R.drawable.bee_marker_ver2
 
                 val markerOptions = MarkerOptions()
                     .position(LatLng(geoPoint.latitude, geoPoint.longitude))
