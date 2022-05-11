@@ -36,6 +36,10 @@ class MainActivity : AppCompatActivity() {
                     showFragment("LIST")
                     true
                 }
+                R.id.map -> {
+                    showFragment("MAP")
+                    true
+                }
                 // TODO activate map option once that fragment is working
                 else -> {
                     false
@@ -65,6 +69,7 @@ class MainActivity : AppCompatActivity() {
             when (tag) {
                 "REPORT" -> transaction.replace(R.id.fragmentContainerView, BeeReportFragment.newInstance(), "REPORT")
                 "LIST" -> transaction.replace(R.id.fragmentContainerView, ReportListFragment.newInstance(), "LIST")
+                "MAP" -> transaction.replace(R.id.fragmentContainerView, BeeMapFragment.newInstance(), "MAP")
             }
             transaction.commit()
         }
