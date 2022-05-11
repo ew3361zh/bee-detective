@@ -313,6 +313,7 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
                 Snackbar.make(requireView(), "Bee report uploaded.", Snackbar.LENGTH_SHORT).show()
                 // Once the image is uploaded the hides progress bar.
                 reportProgressBar.visibility = View.GONE
+                beeImageView.setImageResource(R.drawable.blue_sky_harry_cooke)
             }
                 // Handles error result of failed upload.
                 .addOnFailureListener { error ->
