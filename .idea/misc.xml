@@ -4,13 +4,17 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/Nate O/AndroidStudioProjects/BeeDetective/app/src/main/res/layout/activity_main.xml" value="0.358695652173913" />
-        <entry key="..\:/Users/Nate O/AndroidStudioProjects/BeeDetective/app/src/main/res/layout/fargment_bee_report_no_photo_feed_item.xml" value="0.33" />
-        <entry key="..\:/Users/Nate O/AndroidStudioProjects/BeeDetective/app/src/main/res/layout/fragment_bee_map.xml" value="0.358695652173913" />
         <entry key="..\:/Users/Nate O/AndroidStudioProjects/BeeDetective/app/src/main/res/layout/fragment_bee_report.xml" value="0.25" />
-        <entry key="..\:/Users/Nate O/AndroidStudioProjects/BeeDetective/app/src/main/res/layout/fragment_bee_report_feed_item.xml" value="0.18802083333333333" />
-        <entry key="..\:/Users/Nate O/AndroidStudioProjects/BeeDetective/app/src/main/res/layout/fragment_bee_report_no_notes_feed_item.xml" value="0.18802083333333333" />
         <entry key="..\:/Users/Nate O/AndroidStudioProjects/BeeDetective/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Nate O/AndroidStudioProjects/BeeDetective/app/src/main/res/xml/photo_files.xml" value="0.18802083333333333" />
+        <entry key="..\:/Users/Public/bee-detective1/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Users/Public/bee-detective1/app/src/main/res/layout/fargment_bee_report_no_photo_feed_item.xml" value="0.1" />
+        <entry key="..\:/Users/Public/bee-detective1/app/src/main/res/layout/fragment_bee_map.xml" value="0.27906976744186046" />
+        <entry key="..\:/Users/Public/bee-detective1/app/src/main/res/layout/fragment_bee_report.xml" value="0.358695652173913" />
+        <entry key="..\:/Users/Public/bee-detective1/app/src/main/res/layout/fragment_bee_report_feed.xml" value="0.1" />
+        <entry key="..\:/Users/Public/bee-detective1/app/src/main/res/layout/fragment_bee_report_feed_item.xml" value="0.1" />
+        <entry key="..\:/Users/Public/bee-detective1/app/src/main/res/layout/fragment_bee_report_no_notes_feed_item.xml" value="0.1" />
+        <entry key="..\:/Users/Public/bee-detective1/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.18541666666666667" />
         <entry key="app/src/main/res/layout/fragment_bee_report.xml" value="0.25" />
       </map>
     </option>
