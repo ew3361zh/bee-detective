@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.map -> {
-                    showFragment("")
+                    showFragment("MAP")
                     true
                 }
                 else -> {
@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity() {
             when (tag) {
                 "REPORT" -> transaction.replace(R.id.fragmentContainerView, BeeReportFragment.newInstance(), "REPORT")
                 "LIST" -> transaction.replace(R.id.fragmentContainerView, ReportListFragment.newInstance(), "LIST")
-                "MAP" -> transaction.replace(R.id.fragmentContainerView, BeeMapFragment.newInstance(), "LIST")
+                "MAP" -> transaction.replace(R.id.fragmentContainerView, BeeMapFragment.newInstance(), "MAP")
             }
             transaction.commit()
         }
