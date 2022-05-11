@@ -17,9 +17,14 @@ class MainActivity : AppCompatActivity() {
 
         currentFragmentTag = savedInstanceState?.getString(CURRENT_FRAGMENT_BUNDLE_KEY) ?: "REPORT"
 
+
+
         showFragment(currentFragmentTag)
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav_menu)
+
+        setBottomNavIcon(bottomNavigationView)
+
 
         bottomNavigationView.setOnItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
@@ -36,6 +41,17 @@ class MainActivity : AppCompatActivity() {
                     false
                 }
             }
+        }
+
+    }
+
+    private fun setBottomNavIcon(bottomNavigationView: BottomNavigationView) {
+        // Reads the current fragment on launch of on life cycle being restored and sets the highlighted
+        // button to the current fragment view.
+        when (currentFragmentTag) {
+            "REPORT" -> bottomNavigationView.selectedItemId = R.id.report
+            "LIST" -> bottomNavigationView.selectedItemId = R.id.live_Feed
+            else -> bottomNavigationView.selectedItemId = R.id.map
         }
 
     }

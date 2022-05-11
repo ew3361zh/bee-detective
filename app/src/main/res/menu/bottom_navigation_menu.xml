@@ -9,12 +9,12 @@
 
     <item
         android:id="@+id/report"
-        android:icon="@android:drawable/ic_menu_edit"
+        android:icon="@drawable/bee_sighting_icon"
         android:title="@string/report"/>
 
     <item
         android:id="@+id/live_Feed"
-        android:icon="@android:drawable/ic_menu_gallery"
+        android:icon="@drawable/swarm_icon"
         android:title="@string/live_feed"/>
 
 
