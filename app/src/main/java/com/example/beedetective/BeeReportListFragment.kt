@@ -22,6 +22,7 @@ class ReportListFragment: Fragment() {
 
         val application = requireActivity().application as BeeReportApplication
 
+        // instantiate view model from viewmodelfactory
         beeReportViewModel = BeeReportViewModel.ReportViewModelFactory(application.beeReportRepository)
             .create(BeeReportViewModel::class.java)
     }

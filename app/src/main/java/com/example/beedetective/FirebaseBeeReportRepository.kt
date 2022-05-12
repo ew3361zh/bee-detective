@@ -28,7 +28,8 @@ class FirebaseBeeReportRepository(db: FirebaseFirestore): BeeReportRepository {
     }
 
     // TODO determine if we will allow deleted reports by users (maybe just from feed and not from db)
-    // --> could add boolean field to report object "deletedByUser" and not display those in the feed
+    //  --> could add boolean field to report object "deletedByUser" and not display those in the feed
+
     override fun deleteReport(beeReport: BeeReport) {
         beeReport.documentReference?.delete()
     }

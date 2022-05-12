@@ -18,8 +18,9 @@ class ReportRecyclerAdapter(var reports: List<BeeReport>):
 
     inner class ViewHolder(private val view: View): RecyclerView.ViewHolder(view) {
         fun bind(report: BeeReport) {
+            // handling different amounts of data from different reports being displayed differently
+            // in fragment_bee_report_feed
             view.findViewById<TextView>(R.id.date_spotted).text = "${report.dateReported}"
-            // todo user notes can be blank, should we add default value for note?
 
             if (!report.userNotes.isNullOrBlank()) {
                 view.findViewById<TextView>(R.id.usernotes).text = report.userNotes
@@ -31,9 +32,6 @@ class ReportRecyclerAdapter(var reports: List<BeeReport>):
                     "https://firebasestorage.googleapis.com/v0/b/beedetective-af1e2.appspot.com/o/images%2F" +
                             report.photoName.toString() + "?alt=media&token=c0d00bf1-f1f2-467a-82cf-2ce522068cdb"
                 Log.d(TAG, "photo path is $photoHttpPathReference")
-                // todo what if user doesn't take photo or photo can't load - maybe have default bee photo inserted
-                // todo ideally would only get reports with photos but maybe important to have location data
-                //  which we could use to launch a map intent?
                 Picasso.get()
                     .load(photoHttpPathReference)
                     .error(android.R.drawable.stat_notify_error) // displayed if issue with loading image
@@ -44,6 +42,8 @@ class ReportRecyclerAdapter(var reports: List<BeeReport>):
         }
     }
 
+    // a set of three different report feed items based on the data they contain - accounts
+    // for no notes but with photo, no photo but with notes, and with both notes and photo
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = when (viewType) {
             2 -> LayoutInflater.from(parent.context)
@@ -62,6 +62,7 @@ class ReportRecyclerAdapter(var reports: List<BeeReport>):
         holder.bind(report)
     }
 
+    // not used but a required function for a recycler adapter
     override fun getItemCount(): Int {
         return reports.size
     }
@@ -71,9 +72,9 @@ class ReportRecyclerAdapter(var reports: List<BeeReport>):
         val report = reports[position]
 
         return when {
-            report.photoName == null -> 0
-            report.userNotes.isNullOrBlank() -> 1
-            else -> 2
+            report.photoName == null -> 0 // i.e. user has not taken a photo
+            report.userNotes.isNullOrBlank() -> 1 // user has not added notes
+            else -> 2 // user has added both notes and photo
         }
     }
 
