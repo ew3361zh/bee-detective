@@ -24,6 +24,7 @@ import com.google.android.material.snackbar.Snackbar
 
 
 class BeeMapFragment : Fragment() {
+
     private var locationPermissionGranted = false // Checks for permission to access location
 
     private var mapStartingPointLaunched = false // Checks to see if we zoomed in on current location
@@ -36,9 +37,8 @@ class BeeMapFragment : Fragment() {
 
     private var beeSightingsList = listOf<BeeReport>()
 
-    //    private val beeReportViewModel: BeeReportViewModel by lazy {
-//        ViewModelProvider(requireActivity()).get(BeeReportViewModel::class.java)
-//    }
+
+    // Connects to the ViewModel using a factory class so that we can instantiate it in multiple fragments.
     private val beeReportViewModel: BeeReportViewModel by lazy {
         val app = requireActivity().application as BeeReportApplication
         BeeReportViewModel.ReportViewModelFactory(app.beeReportRepository)
@@ -47,12 +47,14 @@ class BeeMapFragment : Fragment() {
 
     private val mapReadyCallback = OnMapReadyCallback { googleMap ->
 
+        // Holds the Map object.
         map = googleMap
-
-        googleMap.setOnInfoWindowClickListener { marker ->
-            val markerForBee = marker.tag as BeeReport
-
-        }
+        // Possibly unneeded just commented out for now to be sure.
+//        googleMap.setOnInfoWindowClickListener { marker ->
+//            val markerForBee = marker.tag as BeeReport
+//
+//        }
+        // When the map is ready we update the map with the markers.
         updateMap()
     }
 
@@ -64,11 +66,13 @@ class BeeMapFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_bee_map, container, false)
 
+        // Sets the mapFragment with the Map Object when it is ready.
         val mapFragment = childFragmentManager.findFragmentById(R.id.map_view) as SupportMapFragment?
         mapFragment?.getMapAsync(mapReadyCallback)
-
+        // Checks for location permissions in case they are not enabled already from the report fragment.
         requestLocationPermission()
 
+        // Grabs the latest reports from the BeeViewModel.
         beeReportViewModel.latestReports.observe(requireActivity()) { recentBees ->
             beeSightingsList = recentBees
             markBees()
@@ -78,18 +82,23 @@ class BeeMapFragment : Fragment() {
     }
 
     private fun markBees() {
+        // If we do not have a map object we return so that there is not a crash.
         if (map == null) {return}
+
 
         for (marker in beeMarkers) {
             marker.remove()
         }
 
+        // Gets the location data from the BeeReport objects in our list.
         for (bee in beeSightingsList) {
             bee.location?.let { geoPoint ->
                 // val isUsers = could be used to mark user submitted reports.
 
+                // Using the location we draw a small bee.
                 val beeIcon = R.drawable.bee_marker_ver2
-
+                // Set Option to the marker. this makes it so you will see a user note if available and the
+                // date sighted.
                 val markerOptions = MarkerOptions()
                     .position(LatLng(geoPoint.latitude, geoPoint.longitude))
                     .title(bee.userNotes)
@@ -104,6 +113,7 @@ class BeeMapFragment : Fragment() {
         }
     }
 
+    // Handles checking location permissions.
     private fun requestLocationPermission() {
         if (ContextCompat.checkSelfPermission(requireActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -112,6 +122,7 @@ class BeeMapFragment : Fragment() {
             fusedLocationProvider = LocationServices.getFusedLocationProviderClient(requireActivity())
             updateMap()
         } else {
+            // Launches an intent to get location permissions if they are disabled.
             val requestLocationPermissionLauncher =
                 registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
                     if (granted) {
@@ -129,6 +140,7 @@ class BeeMapFragment : Fragment() {
     }
 
     private fun updateMap() {
+        // Mark bees and checks location permisions.
         markBees()
         if(locationPermissionGranted) {
             if(!mapStartingPointLaunched){
@@ -146,14 +158,15 @@ class BeeMapFragment : Fragment() {
             map?.isMyLocationEnabled = true
             map?.uiSettings?.isMyLocationButtonEnabled = true
             map?.uiSettings?.isZoomControlsEnabled = true
-
+            // Unlike the reportFragment we use lastLocation here because we are less concerned
+            // we a users location in this fragment.
             fusedLocationProvider?.lastLocation?.addOnCompleteListener { getLocationTask ->
                 val location = getLocationTask.result
                 if (location != null) {
                     val center = LatLng(location.latitude, location.longitude)
 
                     val zoomLevel = 15f
-
+                    // Moves the camera to their last location if available.
                     map?.moveCamera(CameraUpdateFactory.newLatLngZoom(center, zoomLevel))
                 } else {
                     showSnackbar(getString(R.string.no_location))
@@ -169,6 +182,7 @@ class BeeMapFragment : Fragment() {
 
     companion object {
 
+        // Instantiates new fragment object.
         @JvmStatic
         fun newInstance() = BeeMapFragment()
 
