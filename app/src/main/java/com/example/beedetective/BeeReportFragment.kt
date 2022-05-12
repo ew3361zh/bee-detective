@@ -28,6 +28,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.CancellationToken
+import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.android.gms.tasks.OnTokenCanceledListener
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
@@ -52,6 +53,8 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         BeeReportViewModel.ReportViewModelFactory(app.beeReportRepository)
             .create(BeeReportViewModel::class.java)
     }
+
+    private var cancellationTokenSource = CancellationTokenSource()
 
     private lateinit var dateTextView: TextView
     private lateinit var userNotesTextView: EditText
@@ -80,7 +83,7 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
     // Links to firebase Storage and holds image paths for saved instance state.
     private val storage = Firebase.storage
     private val NEW_BEE_IMAGE_PATH_KEY = "new bee image path key"
-    private val VISABLE_BEE_IMAGE_PATH_KEY = "current visible bee image path key"
+    private val VISIBLE_BEE_IMAGE_PATH_KEY = "current visible bee image path key"
 
     // Holds default int values to be read by the Calendar and if the application cannot access
     // the system calendar it should still run.
@@ -107,7 +110,7 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         super.onCreate(savedInstanceState)
         // reads the image paths from the saved instance state passed when the life cycle is interrupted.
         newImagePath = savedInstanceState?.getString(NEW_BEE_IMAGE_PATH_KEY)
-        visibleImagePath = savedInstanceState?.getString(VISABLE_BEE_IMAGE_PATH_KEY)
+        visibleImagePath = savedInstanceState?.getString(VISIBLE_BEE_IMAGE_PATH_KEY)
     }
 
     override fun onCreateView(
@@ -169,6 +172,11 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
         } catch (ex: IOException) {
             return null to null
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        cancellationTokenSource.cancel()  // Cancel location request, if there is one in progress
     }
 
     private fun updatePhotoView(imageView: ImageView, imagePath: String) {
@@ -253,19 +261,12 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
             return
         }
 
-        class CT: CancellationToken() {
-            override fun onCanceledRequested(p0: OnTokenCanceledListener): CancellationToken {
-                Log.d(TAG, "cancellation requested")
-                return this
-            }
+        // unused in this app, but it would probably be appropriate to
+        // cancel the getCurrentLocation task if the user
+        // navigates away from this fragment before the current location is fetched.
+        val token = cancellationTokenSource.token
 
-            override fun isCancellationRequested(): Boolean {
-                Log.d(TAG, "cancellation requested")
-                return false;  // same
-            }
-        }
-
-        fusedLocationProvider?.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, CT())?.addOnCompleteListener(requireActivity()){ locationRequestTask ->
+        fusedLocationProvider?.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, token)?.addOnCompleteListener(requireActivity()){ locationRequestTask ->
             val location = locationRequestTask.result
             Log.d(LTAG, "Location variable is $location")
             // If location is available we create a new BeeReport Data object to store.
@@ -301,15 +302,19 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
 
     private fun uploadImage() {
         // Checks to see if there is an image path and image file to upload.
-        if (imageUri != null && imageFileName != null) {
 
+        // Make immutable copies,
+        val imageUriToUpload = imageUri
+        val imageFilenameToUpload = imageFileName
 
-            // Grabs a refrence to firebase storage.
+        if (imageUriToUpload != null && imageFilenameToUpload != null) {  // after the null check on val...
+
+            // Grabs a reference to firebase storage.
             val imageStorageRootReference = storage.reference
             val imageCollectionReference = imageStorageRootReference.child("images")
-            val imageFileReference = imageCollectionReference.child(imageFileName!!)
+            val imageFileReference = imageCollectionReference.child(imageFilenameToUpload)  // ... kotlin knows these are not null
             // Uploads the file path and image to Storage
-            imageFileReference.putFile(imageUri!!).addOnCompleteListener {
+            imageFileReference.putFile(imageUriToUpload).addOnCompleteListener {
                 Snackbar.make(requireView(), "Bee report uploaded.", Snackbar.LENGTH_SHORT).show()
                 // Once the image is uploaded the hides progress bar.
                 reportProgressBar.visibility = View.GONE
@@ -334,7 +339,7 @@ class BeeReportFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePi
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(NEW_BEE_IMAGE_PATH_KEY, newImagePath)
-        outState.putString(VISABLE_BEE_IMAGE_PATH_KEY, visibleImagePath)
+        outState.putString(VISIBLE_BEE_IMAGE_PATH_KEY, visibleImagePath)
     }
 
     // Requests location permission in the report fragment since it is the default fragment launched.
